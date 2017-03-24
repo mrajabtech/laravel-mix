@@ -87,7 +87,7 @@ class Preprocessor {
      */
     outputPath() {
         let regex = new RegExp('^(\.\/)?' + this.mixOptions.publicPath);
-        let pathVariant = this.mixOptions.versioning ? 'hashedPath' : 'path';
+        let pathVariant = 'path'; //this.mixOptions.versioning ? 'hashedPath' : 'path';
 
         return this.output[pathVariant].replace(regex, '').replace(/\\/g, '/');
     }

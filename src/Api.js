@@ -274,8 +274,8 @@ class Api {
      */
     minify(src) {
         let output = src.replace(/\.([a-z]{2,})$/i, '.min.$1');
-
-        this.Mix.concat.add({ src, output });
+        let minify = true;
+        this.Mix.concat.add({ src, output, minify });
 
         return this;
     };

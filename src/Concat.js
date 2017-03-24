@@ -37,6 +37,7 @@ class Concat {
             src: files.src,
             output: files.output,
             outputOriginal: files.output,
+            minify: files.minify,
             babel: !! files.babel
         });
 
@@ -87,14 +88,15 @@ class Concat {
 
         // If file versioning is enabled, then we'll
         // rename the output file to apply a hash.
-        if (this.versioning) {
-            let versionedPath = File.find(files.outputOriginal)
-                .versionedPath(md5(mergedFileContents));
+        /*if (this.versioning) {
+         let versionedPath = File.find(files.outputOriginal)
+         .versionedPath(md5(mergedFileContents));
 
-            files.output = output.rename(versionedPath).file;
-        }
+         files.output = output.rename(versionedPath).file;
+         }*/
 
-        if (process.env.NODE_ENV === 'production' || process.argv.includes('-p')) {
+        //if (process.env.NODE_ENV === 'production' || process.argv.includes('-p')) {
+        if (files.minify) {
             new File(files.output).minify();
         }
 
