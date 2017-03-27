@@ -86,16 +86,7 @@ class Concat {
             output.write(this.babelify(mergedFileContents));
         }
 
-        // If file versioning is enabled, then we'll
-        // rename the output file to apply a hash.
-        /*if (this.versioning) {
-         let versionedPath = File.find(files.outputOriginal)
-         .versionedPath(md5(mergedFileContents));
-
-         files.output = output.rename(versionedPath).file;
-         }*/
-
-        //if (process.env.NODE_ENV === 'production' || process.argv.includes('-p')) {
+        //Check if minification required
         if (files.minify) {
             new File(files.output).minify();
         }
