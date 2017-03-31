@@ -1,5 +1,4 @@
 let md5 = require('md5');
-let File = require('./File');
 let chokidar = require('chokidar');
 let concatenate = require('concatenate');
 let babel;
@@ -7,23 +6,12 @@ let babel;
 class Concat {
     /**
      * Create a new Concat instance.
-     *
-     * @param {object} events
      */
-    constructor(events) {
-        this.events = events;
-        this.versioning = false;
+    constructor() {
         this.combinations = [];
 
-        this.events.listen('build', this.run.bind(this));
-    }
-
-
-    /**
-     * Enable file versioning.
-     */
-    enableVersioning() {
-        this.versioning = true;
+        global.events.listen('build', this.run.bind(this))
+            .listen('init', () => this.watch());
     }
 
 
@@ -53,7 +41,7 @@ class Concat {
     watch(watcher) {
         watcher = watcher || chokidar;
 
-        if (! this.shouldWatch()) return;
+        if (! this.shouldWatch() || ! this.any()) return;
 
         this.combinations.forEach(combination => {
             watcher.watch(combination.src, { persistent: true })
@@ -86,14 +74,27 @@ class Concat {
             output.write(this.babelify(mergedFileContents));
         }
 
+        // If file versioning is enabled, then we'll
+        // rename the output file to apply a hash.
+        /*if (global.options.versioning) {
+            let versionedPath = File.find(files.outputOriginal)
+                .versionedPath(md5(mergedFileContents));
+
+            files.output = output.rename(versionedPath).file;
+        }
+
+        if (process.env.NODE_ENV === 'production' || process.argv.includes('-p')) {
+            new File(files.output).minify();
+        }*/
+
         //Check if minification required
         if (files.minify) {
             new File(files.output).minify();
         }
-
+        
         // We'll now fire an event, so that the Manifest class
         // can be refreshed to reflect these new files.
-        this.events.fire('combined', files);
+        global.events.fire('combined', files);
     }
 
 
